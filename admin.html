@@ -1,3 +1,61 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Admin Hotel</title>
+
+<style>
+body {
+  margin: 0;
+  background: #0f2027;
+  color: white;
+  font-family: Arial;
+  text-align: center;
+}
+
+.container {
+  margin-top: 100px;
+}
+
+input {
+  padding: 12px;
+  font-size: 18px;
+  margin: 10px;
+  width: 250px;
+  text-align: center;
+}
+
+button {
+  padding: 12px 25px;
+  font-size: 18px;
+  background: gold;
+  border: none;
+  cursor: pointer;
+}
+
+.status {
+  margin-top: 20px;
+  color: lightgreen;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+  <h1>Reception Control</h1>
+
+  <input id="roomInput" placeholder="Room (101)">
+  <br>
+  <input id="nameInput" placeholder="Guest Name">
+  <br><br>
+
+  <button onclick="saveData()">SAVE</button>
+
+  <div class="status" id="status"></div>
+</div>
+
+<!-- FIREBASE -->
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import { getDatabase, ref, set } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
@@ -20,19 +78,18 @@ window.saveData = function () {
   const name = document.getElementById("nameInput").value.trim();
 
   if (!room || !name) {
-    alert("Isi room & nama dulu");
+    alert("Isi data dulu!");
     return;
   }
 
-  // FIX: pakai path sederhana (biar TV gampang baca)
-  set(ref(db, "tamu"), {
-    nama: name,
-    kamar: room
-  }).then(() => {
-    document.getElementById("status").innerText =
-      "✅ Saved Room " + room + " - " + name;
-  }).catch((err) => {
-    alert(err.message);
+  set(ref(db, "rooms/" + room), {
+    name: name
   });
+
+  document.getElementById("status").innerText =
+    "Saved Room " + room + " - " + name;
 };
 </script>
+
+</body>
+</html>
