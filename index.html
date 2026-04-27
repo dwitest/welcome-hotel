@@ -1,58 +1,31 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-<meta charset="UTF-8">
-<title>Welcome Hotel</title>
-
-<style>
-body {
-  margin: 0;
-  background: black;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
-}
-
-.wrapper {
-  position: relative;
-  width: 100vw;
-  max-width: 1920px;
-  aspect-ratio: 16 / 9;
-
-  background: url('design.jpg') no-repeat center;
-  background-size: cover;
-}
-
-.guest {
-  position: absolute;
-  top: 54%;
-  left: 31%;
-  transform: translate(-50%, -50%);
-
-  font-size: 3vw;
-  color: #D4AF37;
-  font-weight: bold;
-
-  text-align: center;
-  width: 40%;
-  text-shadow: 0 3px 10px rgba(0,0,0,0.8);
-}
-</style>
-
+  <title>TV Hotel</title>
+  <style>
+    body {
+      background: black;
+      color: white;
+      text-align: center;
+      font-family: Arial;
+      margin-top: 15%;
+    }
+    h1 { font-size: 80px; }
+    h2 { font-size: 60px; }
+  </style>
 </head>
-
 <body>
 
-<div class="wrapper">
-  <div id="guestName" class="guest">Loading...</div>
-</div>
+<h1>WELCOME</h1>
+<h2 id="nama">LOADING...</h2>
+<h2 id="kamar"></h2>
 
-<script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+<!-- Firebase COMPAT (WAJIB) -->
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
 
-const firebaseConfig = {
+<script>
+var firebaseConfig = {
   apiKey: "AIzaSyDv_mPyMokzVmbfbV4zkxgfcxb8S3ydy1w",
   authDomain: "welcome-hotel-72f97.firebaseapp.com",
   databaseURL: "https://welcome-hotel-72f97-default-rtdb.asia-southeast1.firebasedatabase.app",
@@ -62,22 +35,19 @@ const firebaseConfig = {
   appId: "1:1007775173316:web:7b0aec3d5bb9a1ad8a9791"
 };
 
-const app = initializeApp(firebaseConfig);
-const db = getDatabase(app);
+firebase.initializeApp(firebaseConfig);
 
-const params = new URLSearchParams(window.location.search);
-const room = params.get("room") || "101";
+var db = firebase.database();
+var ref = db.ref("tamu");
 
-const guestRef = ref(db, "rooms/" + room);
+ref.on("value", function(snapshot) {
+  var data = snapshot.val();
 
-onValue(guestRef, (snapshot) => {
-  const data = snapshot.val();
-  const el = document.getElementById("guestName");
-
-  if (data && data.name) {
-    el.innerText = "Mr/Mrs " + data.name;
+  if (data) {
+    document.getElementById("nama").innerText = data.nama;
+    document.getElementById("kamar").innerText = "ROOM " + data.kamar;
   } else {
-    el.innerText = "Our Valued Guest";
+    document.getElementById("nama").innerText = "BELUM ADA DATA";
   }
 });
 </script>
